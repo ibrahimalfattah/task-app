@@ -4,7 +4,7 @@ const { Pool } = require('pg');
 require('dotenv').config();
 
 const app = express();
-const port = process.env.PORT || 3002;
+const port = process.env.PORT || 7002;
 
 // Database connection
 const pool = new Pool({
