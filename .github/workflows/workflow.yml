@@ -10,8 +10,8 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_BACKEND: ghcr.io/${{ github.repository_owner }}/taskapp-backend
-  IMAGE_FRONTEND: ghcr.io/${{ github.repository_owner }}/taskapp-frontend
+  IMAGE_BACKEND: ghcr.io/${{ github.repository_owner }}/react-app/taskapp-backend
+  IMAGE_FRONTEND: ghcr.io/${{ github.repository_owner }}/react-app/taskapp-frontend
 
 jobs:
   build:
