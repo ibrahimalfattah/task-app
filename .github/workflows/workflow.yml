@@ -55,7 +55,7 @@ jobs:
         with:
           context: ./backend
           push: true
-          tags: ghcr.io/${{ env.OWNER_LC }}/${{ env.REPO_LC }}-backend:latest
+          tags: ghcr.io/${{ env.OWNER_LC }}/${{ env.REPO_LC }}/backend:latest
 
 
       - name: Build & Push Frontend Image
@@ -63,7 +63,7 @@ jobs:
         with:
           context: ./frontend
           push: true
-          tags: ghcr.io/${{ env.OWNER_LC }}/${{ env.REPO_LC }}-frontend:latest
+          tags: ghcr.io/${{ env.OWNER_LC }}/${{ env.REPO_LC }}/frontend:latest
            
 
   deploy:
@@ -87,8 +87,8 @@ jobs:
             set -e
             cd /root/ibrahim-docker-app
             echo "${{ secrets.USR_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-            ghcr.io/${{ env.OWNER_LC }}/${{ env.REPO_LC }}-backend:latest
-            ghcr.io/${{ env.OWNER_LC }}/${{ env.REPO_LC }}-frontend:latest
+            ghcr.io/${{ env.OWNER_LC }}/${{ env.REPO_LC }}/backend:latest
+            ghcr.io/${{ env.OWNER_LC }}/${{ env.REPO_LC }}/frontend:latest
             docker compose -f docker-compose.yml down
             docker compose -f docker-compose.yml up -d
             docker image prune -f
