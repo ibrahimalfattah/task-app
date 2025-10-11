@@ -55,6 +55,8 @@ jobs:
         with:
           context: ./backend
           push: true
+          build-args: |
+            REACT_APP_API_URL=http://168.119.254.41:7002
           tags: ghcr.io/${{ env.OWNER_LC }}/${{ env.REPO_LC }}-backend:latest
 
 
