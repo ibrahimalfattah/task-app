@@ -1,4 +1,4 @@
-name: Deploy React App
+name: Deploy Task App
 on:
   push:
     branches: [ main ]
@@ -9,8 +9,8 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_BACKEND: ghcr.io/${{ github.repository_owner }}/react-app/taskapp-backend
-  IMAGE_FRONTEND: ghcr.io/${{ github.repository_owner }}/react-app/taskapp-frontend
+  IMAGE_BACKEND: ghcr.io/${{ github.repository_owner }}/task-app/taskapp-backend
+  IMAGE_FRONTEND: ghcr.io/${{ github.repository_owner }}/task-app/taskapp-frontend
 
 jobs:
   build:
