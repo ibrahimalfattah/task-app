@@ -47,7 +47,7 @@ jobs:
           push: true
           build-args: |
             REACT_APP_API_URL=${{secrets.API_URL}}
-          tags: ghcr.io/ibrahimalfattah-cmd/task-app-backend:latest
+          tags: ghcr.io/ibrahimalfattah/task-app-backend:latest
 
 
       - name: Build & Push Frontend Image
@@ -55,7 +55,7 @@ jobs:
         with:
           context: ./frontend
           push: true
-          tags: ghcr.io/ibrahimalfattah-cmd/task-app-frontend:latest
+          tags: ghcr.io/ibrahimalfattah/task-app-frontend:latest
            
 
   deploy:
