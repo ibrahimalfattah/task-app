@@ -80,6 +80,7 @@ jobs:
           command: cves,quickview
           image:  ghcr.io/ibrahimalfattah/task-app-backend:latest
           sarif-file: backend-scout-findings.sarif
+          format: sarif
       
       - name: Build & Push Frontend Image
         uses: docker/build-push-action@v6
@@ -96,6 +97,7 @@ jobs:
           command: cves,quickview
           image:  ghcr.io/ibrahimalfattah/task-app-frontend:latest
           sarif-file: frontend-scout-findings.sarif
+          format: sarif
 
           
     #  - name: Upload Docker Scout Reports
