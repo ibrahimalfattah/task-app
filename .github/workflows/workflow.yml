@@ -8,6 +8,34 @@ permissions:
   packages: write   # needed to push to GHCR
 
 jobs:
+
+
+  codeql:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript
+
+      - name: Build (JS does not always need this)
+        run: |
+          echo "No build step required."
+
+      - name: Analyze
+        uses: github/codeql-action/analyze@v3
+
   build:
     runs-on: ubuntu-latest
     environment: dev
@@ -32,13 +60,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.USR_TOKEN }}
-
-      - name: Set Image Tag
-        run: |
-          IMAGE_TAG=${GITHUB_REF_NAME,,}
-          IMAGE_TAG=${IMAGE_TAG//[^a-z0-9._-]/-}
-          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
-      # put near the top of the build job, before build-push steps
      
       - name: Build & Push Backend Image
         uses: docker/build-push-action@v6
@@ -49,34 +70,37 @@ jobs:
             REACT_APP_API_URL=${{secrets.API_URL}}
           tags: ghcr.io/ibrahimalfattah/task-app-backend:latest
 
-
+      - name: Scan Backend Image 
+        uses: docker/scout-action@v1.18.2
+        with:
+          command: cves,quickview
+          image: task-app-backend:latest
+          sarif_file: backend-scout-findings.sarif
+      
       - name: Build & Push Frontend Image
         uses: docker/build-push-action@v6
         with:
           context: ./frontend
           push: true
           tags: ghcr.io/ibrahimalfattah/task-app-frontend:latest
-           
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Checkout repository (for compose path if needed)
-        uses: actions/checkout@v4
-  
-      - name: Deploy to STAGING environment
-        uses: appleboy/ssh-action@v1.0.3
+      - name: Scan Frontend Image 
+        uses: docker/scout-action@v1.18.2
         with:
-          host: ${{ secrets.DEV_TRAINING_SERVER_IP }}
-          username: root
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            set -e
-            cd /root/ibrahim-docker-app
-            echo "${{ secrets.USR_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-            docker compose -f docker-compose.yml down
-            docker image prune -a -f  
-            docker container prune -f
-            docker system prune -a -f
-            docker compose -f docker-compose.yml up -d
+          command: cves,quickview
+          image: task-app-frontend:latest
+          sarif_file: frontend-scout-findings.sarif
+
+          
+      - name: Upload Docker Scout Reports
+        uses: actions/upload-artifact@v4
+        with:  
+          name: docker-scout-reports
+          path: |
+            backend-scout-findings.sarif
+            frontend-scout-findings.sarif
+  #    - name: Upload Scout SARIF Results
+   #     uses: github/codeql-action/upload-sarif@v3
+  #      with:
+ #         sarif_file: .
+  
