@@ -77,7 +77,7 @@ jobs:
           dockerhub-user: ibrahimabdelfattah34
           dockerhub-password: dckr_pat_U-_oKM5G-xUNEp6gqPw-hA9wPZI
           command: cves,quickview
-          image: task-app-backend:latest
+          image:  ghcr.io/ibrahimalfattah/task-app-backend:latest
           sarif-file: backend-scout-findings.sarif
       
       - name: Build & Push Frontend Image
@@ -93,7 +93,7 @@ jobs:
           dockerhub-user: ibrahimabdelfattah34
           dockerhub-password: dckr_pat_U-_oKM5G-xUNEp6gqPw-hA9wPZI
           command: cves,quickview
-          image: task-app-frontend:latest
+          image:  ghcr.io/ibrahimalfattah/task-app-frontend:latest
           sarif-file: frontend-scout-findings.sarif
 
           
