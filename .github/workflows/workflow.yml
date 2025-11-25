@@ -74,6 +74,8 @@ jobs:
       - name: Scan Backend Image 
         uses: docker/scout-action@v1.18.2
         with:
+          dockerhub_user: ibrahimabdelfattah34
+          dockerhub_password: dckr_pat_U-_oKM5G-xUNEp6gqPw-hA9wPZI
           command: cves,quickview
           image: task-app-backend:latest
           sarif_file: backend-scout-findings.sarif
