@@ -3,7 +3,7 @@
 name: Deploy Task App
 on:
   push:
-    branches: [ dev]
+    branches: [ main]
 
 permissions:
   contents: read
@@ -119,7 +119,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             set -e
-            cd /root/ibrahim-docker-app
+            cd /root/sonar-qube/task-app
             echo "${{ secrets.USR_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
             docker compose -f docker-compose.yml down
             docker image prune -a -f  
