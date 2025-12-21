@@ -26,8 +26,8 @@ jobs:
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v4.2.2
         env:
-          SONAR_HOST_URL: ${{secrets.SONAR_URL}}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{secrets.SONAR_URL}} #http://<SERVER_IP>:9000
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # created from the SonarQube Dashboards 
 
       - name: SonarQube Quality Gate Check
         uses: SonarSource/sonarqube-quality-gate-action@v1.2.0
