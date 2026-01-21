@@ -4,7 +4,7 @@
 name: Deploy Task App
 on:
   push:
-    branches: main
+    branches: mainn
 
 permissions:
   contents: read
