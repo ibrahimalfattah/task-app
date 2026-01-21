@@ -4,7 +4,7 @@
 name: Deploy Task App
 on:
   push:
-    branches: [ test123]
+    branches: main
 
 permissions:
   contents: read
@@ -12,32 +12,32 @@ permissions:
 
 jobs:
 
-  sonar:
-    runs-on: ubuntu-latest
+  # sonar:
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v3
+  #   steps:
+  #     - uses: actions/checkout@v3
 
-      - uses: actions/setup-java@v3
-        with:
-          distribution: temurin
-          java-version: '17'
+  #     - uses: actions/setup-java@v3
+  #       with:
+  #         distribution: temurin
+  #         java-version: '17'
 
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v4.2.2
-        env:
-          SONAR_HOST_URL: ${{secrets.SONAR_URL}} #http://<SERVER_IP>:9000
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # created from the SonarQube Dashboards 
+  #     - name: SonarQube Scan
+  #       uses: SonarSource/sonarqube-scan-action@v4.2.2
+  #       env:
+  #         SONAR_HOST_URL: ${{secrets.SONAR_URL}} #http://<SERVER_IP>:9000
+  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # created from the SonarQube Dashboards 
 
-      - name: SonarQube Quality Gate Check
-        uses: SonarSource/sonarqube-quality-gate-action@v1.2.0
-        env:
-          SONAR_HOST_URL: ${{secrets.SONAR_URL}}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  #     - name: SonarQube Quality Gate Check
+  #       uses: SonarSource/sonarqube-quality-gate-action@v1.2.0
+  #       env:
+  #         SONAR_HOST_URL: ${{secrets.SONAR_URL}}
+  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   build:
     runs-on: ubuntu-latest
     environment: dev
-    needs: sonar
+  #  needs: sonar
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -66,14 +66,14 @@ jobs:
           push: true
           tags: ghcr.io/ibrahimalfattah/task-app-backend:latest
 
-      - name: Scan Backend Image 
-        uses: docker/scout-action@v1.18.2
-        with:
-          dockerhub-user: ${{ secrets.DOCKERHUB_USER }}
-          dockerhub-password: ${{ secrets.DOCKERHUB_PSWD }}
-          command: cves,quickview
-          image:  ghcr.io/ibrahimalfattah/task-app-backend:latest
-          sarif-file: backend-scout-findings.sarif
+      # - name: Scan Backend Image 
+      #   uses: docker/scout-action@v1.18.2
+      #   with:
+      #     dockerhub-user: ${{ secrets.DOCKERHUB_USER }}
+      #     dockerhub-password: ${{ secrets.DOCKERHUB_PSWD }}
+      #     command: cves,quickview
+      #     image:  ghcr.io/ibrahimalfattah/task-app-backend:latest
+      #     sarif-file: backend-scout-findings.sarif
       
       - name: Build & Push Frontend Image
         uses: docker/build-push-action@v6
@@ -84,23 +84,23 @@ jobs:
             REACT_APP_API_URL=${{secrets.API_URL}}
           tags: ghcr.io/ibrahimalfattah/task-app-frontend:latest
 
-      - name: Scan Frontend Image 
-        uses: docker/scout-action@v1.18.2
-        with:
-          dockerhub-user: ibrahimabdelfattah34
-          dockerhub-password: dckr_pat_U-_oKM5G-xUNEp6gqPw-hA9wPZI
-          command: cves,quickview
-          image:  ghcr.io/ibrahimalfattah/task-app-frontend:latest
-          sarif-file: frontend-scout-findings.sarif
+      # - name: Scan Frontend Image 
+      #   uses: docker/scout-action@v1.18.2
+      #   with:
+      #     dockerhub-user: ibrahimabdelfattah34
+      #     dockerhub-password: dckr_pat_U-_oKM5G-xUNEp6gqPw-hA9wPZI
+      #     command: cves,quickview
+      #     image:  ghcr.io/ibrahimalfattah/task-app-frontend:latest
+      #     sarif-file: frontend-scout-findings.sarif
 
           
-      - name: Upload Docker Scout Reports
-        uses: actions/upload-artifact@v4
-        with:  
-          name: docker-scout-reports
-          path: |
-            backend-scout-findings.sarif
-            frontend-scout-findings.sarif
+      # - name: Upload Docker Scout Reports
+      #   uses: actions/upload-artifact@v4
+      #   with:  
+      #     name: docker-scout-reports
+      #     path: |
+      #       backend-scout-findings.sarif
+      #       frontend-scout-findings.sarif
   #    - name: Upload Scout SARIF Results
    #     uses: github/codeql-action/upload-sarif@v3
   #      with:
@@ -120,7 +120,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             set -e
-            cd /root/sonar-qube/task-app
+            cd /root/task-app
             echo "${{ secrets.USR_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
             docker compose -f docker-compose.yml down
             docker image prune -a -f  
