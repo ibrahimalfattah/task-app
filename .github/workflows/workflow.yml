@@ -4,7 +4,7 @@
 name: Deploy Task App
 on:
   push:
-    branches: mainn
+    branches: main
 
 permissions:
   contents: read
@@ -36,7 +36,7 @@ jobs:
   #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   build:
     runs-on: ubuntu-latest
-    environment: dev
+   # environment: dev
   #  needs: sonar
     steps:
       - name: Checkout repository
@@ -105,27 +105,27 @@ jobs:
    #     uses: github/codeql-action/upload-sarif@v3
   #      with:
  #         sarif_file: .
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Checkout repository (for compose path if needed)
-        uses: actions/checkout@v4
+  # deploy:
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   steps:
+  #     - name: Checkout repository (for compose path if needed)
+  #       uses: actions/checkout@v4
   
-      - name: Deploy to STAGING environment
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.DEV_TRAINING_SERVER_IP }}
-          username: root
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            set -e
-            cd /root/task-app
-            echo "${{ secrets.USR_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-            docker compose -f docker-compose.yml down
-            docker image prune -a -f  
-            docker container prune -f
-            docker system prune -a -f
-            docker compose -f docker-compose.yml up -d
+  #     - name: Deploy to STAGING environment
+  #       uses: appleboy/ssh-action@v1.0.3
+  #       with:
+  #         host: ${{ secrets.DEV_TRAINING_SERVER_IP }}
+  #         username: root
+  #         key: ${{ secrets.SSH_PRIVATE_KEY }}
+  #         script: |
+  #           set -e
+  #           cd /root/task-app
+  #           echo "${{ secrets.USR_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+  #           docker compose -f docker-compose.yml down
+  #           docker image prune -a -f  
+  #           docker container prune -f
+  #           docker system prune -a -f
+  #           docker compose -f docker-compose.yml up -d
  
 
